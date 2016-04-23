@@ -1,0 +1,7 @@
+name: ${project.artifactId}
+version: ${project.version}
+author: OhBlihv
+main: me.ohblihv.${project.artifactId}.${project.artifactId}
+commands:
+    ${project.artifactId}:
+        aliases: [packages]

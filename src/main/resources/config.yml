@@ -1,0 +1,168 @@
+#APackages Configuration File
+#-------------------------------------
+
+commands:
+    lore:
+        enable: true
+        command: "lore"
+        permission: "apackages.lore"
+        no-permission: "&cYou do not have permission to use this command"
+        options:
+            restrictions:
+                #Restrict lore editing to to weapons, armour, and select other items.
+                restrict-to-items: true
+                item-restriction-message: "&cThis item is not editable"
+            syntax: "&cSyntax: /lore <name|lore|removename|removelore> [lines] | OR /lore help"
+            help:
+            - "&7Use |'s between words to create a new line"
+            - "&7Example: /lore Test Lore | This is a new line."
+            #Leave this blank to omit this message from editing
+            #Currently doesn't work. Ignore this
+            edited-message: "&7Edited by &o{player}"
+            #
+            set-lore: "&aSuccessfully set lore of item"
+            set-displayname: "&aSuccessfully set displayname of item"
+            removed-lore: "&aRemoved lore of item"
+            removed-displayname: "&aRemoved displayname of item"
+    timeleft:
+        enable: true
+        command: "timeleft"
+        options:
+            print-format:
+            - "&7Time Left:"
+            - "{lines}"
+            - "&7----"
+            print-message: "&7{rank} - {timeleft}"
+            no-packages: "&7You have no expiring packages"
+            timeleft:
+                format: "{days}{hours}{minutes}{seconds}"
+                days: "{days} day"
+                hours: "{hours} hour"
+                minutes: "{minutes} minute"
+                seconds: "{seconds} second"
+                expiring-soon: "&6Expiring Soon!"
+    prefix:
+        enable: true
+        command: "prefix"
+        permission: "apackages.prefix"
+        no-permission: "&cYou do not have permission to use this command"
+        options:
+            format: "{prefix} {group-colour}>"
+            length:
+                min: 3
+                min-message: "&cYour prefix is too short. It must be at least 3 characters."
+                max: 20
+                max-message: "&cYour prefix is too long. It must be less than or equal to 20 characters in length."
+            restrictions:
+                #Restrict any prefix containing '&k'
+                allow-magic-code: false
+                magic-code-message: "&cThe magic code '&k' is not allowed in a prefix"
+                #Any character that is not a-z or 0-9 will be disallowed (Excludes &)
+                allow-non-alphanumeric-characters: false
+                alphanumeric-charcters-message: "&cNon alphanumeric characters are not allowed in a prefix"
+                disallowed-words:
+                - "musketeer"
+                - "admin"
+                - "moderator"
+                disallowed-words-message: "&cYour prefix contains a disallowed word."
+            syntax: "&cSyntax: /prefix <prefix>"
+            set-prefix: "&aYour prefix has been set to &7{prefix}"
+            group-colours:
+                #You need to do these yourselves
+                squid: "&a"
+                ocelot: "&b"
+                ghast: "&c"
+                endermite: "&d"
+                admin: "&e"
+                trusted: "&6"
+                musketeer: "&5"
+    #Admin command. Includes old /updatetime
+    admin:
+        enabled: true
+        command: "packages"
+        permission: "apackages.admin"
+        no-permission: "&cYou do not have permission to use this command"
+        options:
+            syntax: "&cSyntax: /packages <addtime|removetime|settime> <player> <package> <time> <unit>"
+            invalid-time: "&cEnter a valid time to use."
+            invalid-unit: "&cEnter a valid time unit."
+            invalid-package: "&cThat package does not exist."
+            player-doesnt-exist: "&cThat player does not exist."
+            success:
+                added-time: "&aAdded {time} {unit} to {player}'s {package}."
+                removed-time: "&aRemoved {time} {unit} to {player}'s {package}."
+                set-time: "&aSet {player}'s remaining {package} time to {time} {unit}."
+    xpclaim:
+        enabled: true
+        command: "xp"
+        permission: "apackages.xp"
+        no-permission: "&cYou do not have permission to use this command"
+        on-use: "&aYou have claimed 20xp for yourself."
+        cooldown:
+            time: 12
+            unit: HOURS
+            on-cooldown: "&cYou have already claimed your xp bonus for today."
+        options:
+            claim-amount: 20
+    fixclaim:
+        enabled: true
+        command: "fix"
+        permission: "apackages.fix"
+        no-permission: "&cYou do not have permission to use this command"
+        on-use: "&aYou have successfully repaired your item"
+        cooldown:
+            time: 12
+            unit: HOURS
+            on-cooldown: "&cYou've already redeemed your free item fix today! Come back tomorrow."
+        options:
+            not-repairable: "&cThat item is not repairable! Try a tool for instance."
+            already-repaired: "&cThat item is already at full durability!"
+    health:
+        enabled: true
+        command: "health"
+        permission: "apackages.health"
+        no-permission: "&cYou do not have permission to use this command"
+        options:
+            #Items closer to the top are higher priority when a user has multiple permissions
+            amount:
+                #Replace any '.' with '-' below.
+                "apackages-health-40": 40
+                "apackages-health-30": 30
+            menu-message:
+            - "&7Health Menu"
+            - "&7/health on (enable your bonus)"
+            - "&7/health off (disable your bonus)"
+            - "~fin"
+            bonus-active: "&aYour {health} heart perk has been enabled!"
+            bonus-inactive: "&aYour {health} heart perk has been disabled!"
+            bonus-already-active: "&cYour health bonus is already enabled!"
+            bonus-already-inactive: "&cYour health bonus is already disabled!"
+
+messages:
+    commands:
+        #If none is given in a command, these defaults will be used in place.
+        default:
+            on-cooldown: "&cThis command is on cooldown."
+
+packages:
+    warlock:
+        displayname: "&cWarlock"
+        #Internal/Permissions group name
+        group-name: "warlock"
+        expiry:
+            time: 30
+            unit: DAYS
+    titan:
+        displayname: "&cTitan"
+        #Internal/Permissions group name
+        group-name: "titan"
+        expiry:
+            time: 30
+            unit: DAYS
+    immortal:
+        displayname: "&cImmortal"
+        #Internal/Permissions group name
+        group-name: "immortal"
+        expiry:
+            time: 30
+            unit: DAYS
