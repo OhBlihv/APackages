@@ -1,7 +1,11 @@
 package me.ohblihv.APackages;
 
 import lombok.Getter;
+import me.ohblihv.APackages.util.FlatFile;
 import me.ohblihv.APackages.util.Messages;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -29,5 +33,14 @@ public class APackages extends JavaPlugin
 	{
 
 	}
-	
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+	{
+		if(command.getName().equalsIgnoreCase("apackages"))
+		{
+			CommandListener.getInstance().findCommand(sender, FlatFile.getInstance().getString("commands.admin.command"), args);
+		}
+		return true;
+	}
 }

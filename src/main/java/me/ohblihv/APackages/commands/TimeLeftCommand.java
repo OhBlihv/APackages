@@ -3,6 +3,7 @@ package me.ohblihv.APackages.commands;
 import me.ohblihv.APackages.MonthlyPackage;
 import me.ohblihv.APackages.PackageManager;
 import me.ohblihv.APackages.util.BUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -31,8 +32,16 @@ public class TimeLeftCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender sender, String[] args)
 	{
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("§cOnly players are allowed to use this command.");
+			return false;
+		}
+
+		Player player = (Player) sender;
+
 		Map<String, String> optionMap = PackageManager.getPackageOptions(player);
 		for(String line : printFormat)
 		{
@@ -49,7 +58,7 @@ public class TimeLeftCommand extends ACommand
 						MonthlyPackage monthlyPackage = PackageManager.getPackage(entry.getKey());
 						if(monthlyPackage == null)
 						{
-							BUtil.logError("Found expiring package named '" + entry.getKey() + " that did not exist within this plugin!");
+							BUtil.logError("Found expiring package named '" + entry.getKey() + "' that did not exist within this plugin!");
 							continue;
 						}
 

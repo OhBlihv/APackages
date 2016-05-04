@@ -1,6 +1,7 @@
 package me.ohblihv.APackages.commands;
 
 import me.ohblihv.APackages.util.BUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import ru.tehkode.permissions.PermissionUser;
@@ -68,8 +69,16 @@ public class PrefixCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender sender, String[] args)
 	{
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("§cOnly players are allowed to use this command.");
+			return false;
+		}
+
+		Player player = (Player) sender;
+
 		if(args.length == 0)
 		{
 			player.sendMessage(syntaxMessage);

@@ -3,6 +3,7 @@ package me.ohblihv.APackages.commands;
 import lombok.Getter;
 import me.ohblihv.APackages.util.BUtil;
 import me.ohblihv.APackages.util.FlatFile;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -112,36 +113,40 @@ public abstract class ACommand
 		return commandCooldownMap.getOrDefault(uuid, -1L);
 	}
 
-	public void onInitialCommand(Player player, String[] args)
+	public void onInitialCommand(CommandSender sender, String[] args)
 	{
-		if(!hasPermission(player))
+		boolean isPlayer = sender instanceof Player;
+		if(isPlayer)
 		{
-			if(noPermissionMessage != null)
+			if(!hasPermission((Player) sender))
 			{
-				player.sendMessage(noPermissionMessage);
+				if(noPermissionMessage != null)
+				{
+					sender.sendMessage(noPermissionMessage);
+				}
+				return;
 			}
-			return;
-		}
 
-		long cooldown = checkCooldown(player.getUniqueId());
-		if(cooldown > 0 /*&& !player.isOp()*/ && (cooldown - System.currentTimeMillis()) > 0)
-		{
-			player.sendMessage(onCooldownMessage);
-			return;
+			long cooldown = checkCooldown(((Player) sender).getUniqueId());
+			if(cooldown > 0 /*&& !sender.isOp()*/ && (cooldown - System.currentTimeMillis()) > 0)
+			{
+				sender.sendMessage(onCooldownMessage);
+				return;
+			}
 		}
 
 		//Only enter if the command completed successfully
-		if(onCommand(player, args))
+		if(onCommand(sender, args))
 		{
 			if(onUseMessage != null)
 			{
-				player.sendMessage(onUseMessage);
+				sender.sendMessage(onUseMessage);
 			}
 
 			//Add the cooldown if required
-			if(expiryTime > 0)
+			if(isPlayer && expiryTime > 0)
 			{
-				addCooldown(player.getUniqueId());
+				addCooldown(((Player) sender).getUniqueId());
 			}
 		}
 	}
@@ -164,6 +169,6 @@ public abstract class ACommand
 	 * @param args
 	 * @return True if the command completed successfully, else False.
 	 */
-	public abstract boolean onCommand(Player player, String[] args);
+	public abstract boolean onCommand(CommandSender player, String[] args);
 
 }

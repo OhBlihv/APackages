@@ -97,8 +97,16 @@ public class PackageManager
 
 	public static void addTime(Player player, String internalName, long seconds)
 	{
-		PermissionUser permissionUser = PermissionsEx.getUser(player);
+		addTime(PermissionsEx.getUser(player), internalName, seconds);
+	}
 
+	public static void addTime(String playerName, String internalName, long seconds)
+	{
+		addTime(PermissionsEx.getUser(playerName), internalName, seconds);
+	}
+
+	public static void addTime(PermissionUser permissionUser, String internalName, long seconds)
+	{
 		long secondsTilExpiry = System.currentTimeMillis() / 1000L;
 		String optionString = permissionUser.getOption(PERMISSIONSEX_OPTION_PREFIX + internalName);
 
@@ -119,8 +127,16 @@ public class PackageManager
 
 	public static void removeTime(Player player, String internalName, long seconds)
 	{
-		PermissionUser permissionUser = PermissionsEx.getUser(player);
+		removeTime(PermissionsEx.getUser(player), internalName, seconds);
+	}
 
+	public static void removeTime(String playerName, String internalName, long seconds)
+	{
+		removeTime(PermissionsEx.getUser(playerName), internalName, seconds);
+	}
+
+	public static void removeTime(PermissionUser permissionUser, String internalName, long seconds)
+	{
 		long secondsTilExpiry = System.currentTimeMillis() / 1000L;
 		String optionString = permissionUser.getOption(PERMISSIONSEX_OPTION_PREFIX + internalName);
 
@@ -141,7 +157,17 @@ public class PackageManager
 
 	public static void setTime(Player player, String internalName, long seconds)
 	{
-		PermissionsEx.getUser(player).setOption(PERMISSIONSEX_OPTION_PREFIX + internalName, String.valueOf((System.currentTimeMillis() / 1000L) + seconds));
+		setTime(PermissionsEx.getUser(player), internalName, seconds);
+	}
+
+	public static void setTime(String playerName, String internalName, long seconds)
+	{
+		setTime(PermissionsEx.getUser(playerName), internalName, seconds);
+	}
+
+	public static void setTime(PermissionUser permissionUser, String internalName, long seconds)
+	{
+		permissionUser.setOption(PERMISSIONSEX_OPTION_PREFIX + internalName, String.valueOf((System.currentTimeMillis() / 1000L) + seconds));
 	}
 
 }

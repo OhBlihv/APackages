@@ -3,6 +3,7 @@ package me.ohblihv.APackages.commands;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.ohblihv.APackages.util.BUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -77,8 +78,16 @@ public class HealthCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender sender, String[] args)
 	{
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("§cOnly players are allowed to use this command.");
+			return false;
+		}
+
+		Player player = (Player) sender;
+
 		if(args.length > 0)
 		{
 			if(args[0].equalsIgnoreCase("on"))

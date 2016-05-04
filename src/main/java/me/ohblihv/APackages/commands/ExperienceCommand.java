@@ -1,5 +1,6 @@
 package me.ohblihv.APackages.commands;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -19,9 +20,15 @@ public class ExperienceCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender sender, String[] args)
 	{
-		player.giveExp(claimAmount);
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("§cOnly players are allowed to use this command.");
+			return false;
+		}
+
+		((Player) sender).giveExp(claimAmount);
 		return true;
 	}
 }

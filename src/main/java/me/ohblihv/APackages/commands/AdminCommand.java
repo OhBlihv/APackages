@@ -5,8 +5,8 @@ import me.ohblihv.APackages.PackageManager;
 import me.ohblihv.APackages.util.BUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,12 +40,12 @@ public class AdminCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender player, String[] args)
 	{
 		if(args.length > 4)
 		{
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
-			if(offlinePlayer == null || !offlinePlayer.isOnline())
+			if(offlinePlayer == null)
 			{
 				player.sendMessage(playerDoesntExist);
 				return false;
@@ -100,19 +100,41 @@ public class AdminCommand extends ACommand
 			{
 				case "addtime":
 				{
-					PackageManager.addTime(player, monthlyPackage.getInternalName(), seconds);
+					if(offlinePlayer.isOnline())
+					{
+						PackageManager.addTime(offlinePlayer.getPlayer(), monthlyPackage.getInternalName(), seconds);
+					}
+					else
+					{
+						PackageManager.addTime(offlinePlayer.getName(), monthlyPackage.getInternalName(), seconds);
+					}
+
 					successMessage = addedTime;
 					break;
 				}
 				case "removetime":
 				{
-					PackageManager.removeTime(player, monthlyPackage.getInternalName(), seconds);
+					if(offlinePlayer.isOnline())
+					{
+						PackageManager.removeTime(offlinePlayer.getPlayer(), monthlyPackage.getInternalName(), seconds);
+					}
+					else
+					{
+						PackageManager.removeTime(offlinePlayer.getName(), monthlyPackage.getInternalName(), seconds);
+					}
 					successMessage = removedTime;
 					break;
 				}
 				case "settime":
 				{
-					PackageManager.setTime(player, monthlyPackage.getInternalName(), seconds);
+					if(offlinePlayer.isOnline())
+					{
+						PackageManager.setTime(offlinePlayer.getPlayer(), monthlyPackage.getInternalName(), seconds);
+					}
+					else
+					{
+						PackageManager.setTime(offlinePlayer.getName(), monthlyPackage.getInternalName(), seconds);
+					}
 					successMessage = setTime;
 					break;
 				}

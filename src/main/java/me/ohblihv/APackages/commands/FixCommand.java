@@ -2,6 +2,7 @@ package me.ohblihv.APackages.commands;
 
 import me.ohblihv.APackages.util.BUtil;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,19 +25,25 @@ public class FixCommand extends ACommand
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args)
+	public boolean onCommand(CommandSender sender, String[] args)
 	{
-		ItemStack itemStack = player.getItemInHand();
+		if(!(sender instanceof Player))
+		{
+			sender.sendMessage("§cOnly players are allowed to use this command.");
+			return false;
+		}
+
+		ItemStack itemStack = ((Player) sender).getItemInHand();
 		Material material = itemStack.getType();
 		if(material.isBlock() || material.getMaxDurability() < 1)
 		{
-			player.sendMessage(notRepairableMessage);
+			sender.sendMessage(notRepairableMessage);
 			return false;
 		}
 
 		if(itemStack.getDurability() == 0)
 		{
-			player.sendMessage(alreadyRepairedMessage);
+			sender.sendMessage(alreadyRepairedMessage);
 			return false;
 		}
 

@@ -1,5 +1,6 @@
 package me.ohblihv.APackages;
 
+import lombok.Getter;
 import me.ohblihv.APackages.commands.ACommand;
 import me.ohblihv.APackages.commands.AdminCommand;
 import me.ohblihv.APackages.commands.ExperienceCommand;
@@ -9,6 +10,7 @@ import me.ohblihv.APackages.commands.LoreCommand;
 import me.ohblihv.APackages.commands.PrefixCommand;
 import me.ohblihv.APackages.commands.TimeLeftCommand;
 import me.ohblihv.APackages.util.FlatFile;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,10 +26,16 @@ import java.util.Set;
 public class CommandListener implements Listener
 {
 
+	@Getter
+	private static CommandListener instance = null;
+
+	@Getter
 	private Set<ACommand> commandSet = new HashSet<>();
 
 	public CommandListener()
 	{
+		instance = this;
+
 		FlatFile cfg = FlatFile.getInstance();
 
 		commandSet.add(new AdminCommand(cfg.getConfigurationSection("commands.admin")));
@@ -58,15 +66,23 @@ public class CommandListener implements Listener
 			args = new String[]{};
 		}
 
+		if(findCommand(event.getPlayer(), commandName, args))
+		{
+			event.setCancelled(true);
+		}
+	}
+
+	public boolean findCommand(CommandSender sender, String commandName, String[] args)
+	{
 		for(ACommand command : commandSet)
 		{
 			if(command.matchesCommand(commandName))
 			{
-				event.setCancelled(true);
-				command.onInitialCommand(event.getPlayer(), args);
-				return;
+				command.onInitialCommand(sender, args);
+				return true;
 			}
 		}
+		return false;
 	}
 	
 }
