@@ -56,7 +56,9 @@ public class HealthCommand extends ACommand
 
 		for(String permission : configurationSection.getConfigurationSection("options.amount").getKeys(false))
 		{
-			healthBonusSet.add(new HealthBonus(permission.replace("-", "\\."), Integer.parseInt(configurationSection.getString("options.amount." + permission, "21"))));
+			healthBonusSet.add(new HealthBonus(permission.replace("-", "."), Integer.parseInt(configurationSection.getString("options.amount." + permission, "21"))));
+			BUtil.logInfo("Loaded Health Bonus for '" + permission.replace("-", ".") + "' (" + permission + ") at " +
+				                                configurationSection.getString("options.amount." + permission, "21"));
 		}
 	}
 
