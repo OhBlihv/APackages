@@ -3,13 +3,14 @@ package me.ohblihv.APackages.commands;
 import lombok.Getter;
 import me.ohblihv.APackages.util.BUtil;
 import me.ohblihv.APackages.util.FlatFile;
+import me.ohblihv.APackages.util.SaveFlatFile;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,8 +20,6 @@ public abstract class ACommand
 {
 
 	static final String MISSING_STRING = "§cThis message is missing from the config. Ensure your config is up to date.";
-
-	private static final ConcurrentHashMap<String, HashMap<UUID, Long>> cooldownMap = new ConcurrentHashMap<>();
 
 	@Getter
 	final boolean enabled;
@@ -104,7 +103,7 @@ public abstract class ACommand
 			return -1;
 		}
 
-		HashMap<UUID, Long> commandCooldownMap = cooldownMap.get(command);
+		Map<UUID, Long> commandCooldownMap = SaveFlatFile.getSaveMap().get(command);
 		if(commandCooldownMap == null)
 		{
 			return -1;
@@ -153,11 +152,11 @@ public abstract class ACommand
 
 	private void addCooldown(UUID uuid)
 	{
-		HashMap<UUID, Long> commandCooldownMap = cooldownMap.get(command);
+		Map<UUID, Long> commandCooldownMap = SaveFlatFile.getSaveMap().get(command);
 		if(commandCooldownMap == null)
 		{
 			commandCooldownMap = new HashMap<>();
-			cooldownMap.put(command, commandCooldownMap);
+			SaveFlatFile.getSaveMap().put(command, commandCooldownMap);
 		}
 
 		commandCooldownMap.put(uuid, System.currentTimeMillis() + expiryUnit.toMillis(expiryTime));

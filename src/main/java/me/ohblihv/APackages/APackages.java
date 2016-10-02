@@ -3,9 +3,9 @@ package me.ohblihv.APackages;
 import lombok.Getter;
 import me.ohblihv.APackages.util.FlatFile;
 import me.ohblihv.APackages.util.Messages;
+import me.ohblihv.APackages.util.SaveFlatFile;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -22,6 +22,9 @@ public class APackages extends JavaPlugin
 	{
 		instance = this;
 
+		FlatFile.getInstance(); //Init FlatFile
+		SaveFlatFile.getInstance(); //Init SaveFlatFile
+
 		PackageManager.reload();
 		Messages.reloadMessages();
 
@@ -31,7 +34,7 @@ public class APackages extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-
+		SaveFlatFile.getInstance().save(); //Save all pending actions
 	}
 
 	@Override
