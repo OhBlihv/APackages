@@ -24,6 +24,7 @@ public class LoreCommand extends ACommand
 	private final String    syntaxMessage,
 							editedMessage,
 							strippedEditedMessage,
+							itemRestrictionBypass,
 							itemRestrictionMessage,
 							setLoreMessage,
 							setDisplaynameMessage,
@@ -37,6 +38,7 @@ public class LoreCommand extends ACommand
 		super(configurationSection);
 
 		this.restrictToItems = configurationSection.getBoolean("options.restrictions.restrict-to-items", true);
+		this.itemRestrictionBypass = BUtil.translateColours(configurationSection.getString("options.restrictions.item-restriction-bypass", MISSING_STRING));
 		this.itemRestrictionMessage = BUtil.translateColours(configurationSection.getString("options.restrictions.item-restriction-message", MISSING_STRING));
 
 		this.syntaxMessage = BUtil.translateColours(configurationSection.getString("options.syntax", MISSING_STRING));
@@ -80,7 +82,7 @@ public class LoreCommand extends ACommand
 
 		ItemStack itemStack = player.getItemInHand();
 		Material material = itemStack.getType();
-		if(restrictToItems && (material.isBlock() || material.getMaxDurability() < 1))
+		if((restrictToItems && !player.hasPermission(itemRestrictionBypass)) && (material.isBlock() || material.getMaxDurability() < 1))
 		{
 			player.sendMessage(itemRestrictionMessage);
 			return false;
@@ -169,6 +171,7 @@ public class LoreCommand extends ACommand
 		}
 
 		itemStack.setItemMeta(itemMeta);
+		player.updateInventory();
 		return true;
 	}
 

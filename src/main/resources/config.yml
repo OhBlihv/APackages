@@ -11,6 +11,7 @@ commands:
             restrictions:
                 #Restrict lore editing to to weapons, armour, and select other items.
                 restrict-to-items: true
+                item-restriction-bypass: "apackages.lore.bypass"
                 item-restriction-message: "&cThis item is not editable"
             syntax: "&cSyntax: /lore <name|lore|removename|removelore> [lines] | OR /lore help"
             help:
