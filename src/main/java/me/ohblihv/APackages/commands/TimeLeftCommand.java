@@ -6,6 +6,8 @@ import me.ohblihv.APackages.util.BUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import ru.tehkode.permissions.PermissionUser;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.util.List;
 import java.util.Map;
@@ -34,17 +36,24 @@ public class TimeLeftCommand extends ACommand
 	@Override
 	public boolean onCommand(CommandSender sender, String[] args)
 	{
-		if(!(sender instanceof Player))
-		{
-			sender.sendMessage("§cOnly players are allowed to use this command.");
-			return false;
-		}
-
 		Player player = (Player) sender;
-
-		Map<String, String> optionMap = PackageManager.getPackageOptions(player);
+		final String targetPlayer;
+		if(args.length > 0)
+		{
+			targetPlayer = args[0];
+		}
+		else
+		{
+			 targetPlayer = player.getName();
+		}
+		
+		Map<String, String> optionMap = PackageManager.getPackageOptions(targetPlayer);
 		for(String line : printFormat)
 		{
+			if(line.contains("{player}"))
+			{
+				line = line.replace("{player}", targetPlayer);
+			}
 			if(line.equals("{lines}"))
 			{
 				if(optionMap.isEmpty())
@@ -61,7 +70,7 @@ public class TimeLeftCommand extends ACommand
 							BUtil.logError("Found expiring package named '" + entry.getKey() + "' that did not exist within this plugin!");
 							continue;
 						}
-
+						
 						long expiryTime;
 						try
 						{
@@ -72,14 +81,39 @@ public class TimeLeftCommand extends ACommand
 							BUtil.logError("Found invalid activation time: " + entry.getValue() + " on package " + entry.getKey());
 							continue;
 						}
-
-						player.sendMessage(printMessage.replace("{rank}", monthlyPackage.getDisplayname()).replace("{timeleft}", monthlyPackage.getTimeleft(expiryTime)));
+						
+						boolean hasRank = true;
+						if(expiryTime < System.currentTimeMillis())
+						{
+							hasRank = false;
+							
+							String packageInternalName = monthlyPackage.getInternalName().toLowerCase();
+							
+							PermissionUser user = PermissionsEx.getUser(player);
+							for(String groupName : user.getGroupNames())
+							{
+								if(groupName.toLowerCase().equals(packageInternalName))
+								{
+									hasRank = true;
+									break;
+								}
+							}
+						}
+						
+						if(!hasRank)
+						{
+							continue;
+						}
+						
+						player.sendMessage(printMessage
+							                   .replace("{rank}", monthlyPackage.getDisplayname())
+							                   .replace("{timeleft}", monthlyPackage.getTimeleft(expiryTime)));
 					}
 				}
-
+				
 				continue;
 			}
-
+			
 			player.sendMessage(line);
 		}
 		return true;
