@@ -1,11 +1,16 @@
 package me.ohblihv.APackages.commands;
 
+import com.skytonia.SkyCore.util.RunnableShorthand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.ohblihv.APackages.util.BUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -82,46 +87,105 @@ public class HealthCommand extends ACommand
 	@Override
 	public boolean onCommand(CommandSender sender, String[] args)
 	{
-		if(!(sender instanceof Player))
+		Player player = null;
+		if(sender instanceof Player)
 		{
-			sender.sendMessage("§cOnly players are allowed to use this command.");
-			return false;
+			player = (Player) sender;
 		}
-
-		Player player = (Player) sender;
 
 		if(args.length > 0)
 		{
+			if(player == null)
+			{
+				if(args.length < 2)
+				{
+					sender.sendMessage("§cMissing target player name!");
+					return true;
+				}
+				
+				OfflinePlayer offlinePlayer;
+				try
+				{
+					offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+					
+					if(offlinePlayer == null)
+					{
+						sender.sendMessage("§cPlayer " + args[1] + " does not exist.");
+						return true;
+					}
+					else if(!offlinePlayer.isOnline())
+					{
+						sender.sendMessage("§cPlayer " + args[1] + " is offline.");
+						return true;
+					}
+				}
+				catch(Exception e)
+				{
+					sender.sendMessage("§cPlayer " + args[1] + " does not exist.");
+					return true;
+				}
+				
+				player = offlinePlayer.getPlayer();
+			}
+			
 			if(args[0].equalsIgnoreCase("on"))
 			{
 				if(hasHealthBonusActive(player))
 				{
-					player.sendMessage(BONUS_ALREADY_ACTIVE);
+					sender.sendMessage(BONUS_ALREADY_ACTIVE);
 					return false;
 				}
 
 				player.setMaxHealth(getHealthBonus(player));
-				player.sendMessage(BONUS_ACTIVE.replace("{health}", String.valueOf((int) player.getMaxHealth())));
+				sender.sendMessage(BONUS_ACTIVE.replace("{health}", String.valueOf((int) player.getMaxHealth())));
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("off"))
 			{
 				if(!hasHealthBonusActive(player))
 				{
-					player.sendMessage(BONUS_ALREADY_INACTIVE);
+					sender.sendMessage(BONUS_ALREADY_INACTIVE);
 					return false;
 				}
-
+				
 				player.setMaxHealth(DEFAULT_HEALTH);
-				player.sendMessage(BONUS_INACTIVE.replace("{health}", String.valueOf(getHealthBonus(player))));
+				sender.sendMessage(BONUS_INACTIVE.replace("{health}", String.valueOf(getHealthBonus(player))));
 				return true;
 			}
 		}
-
-		for(String line : menuMessage)
+		
+		if(!(sender instanceof Player))
 		{
-			player.sendMessage(line);
+			sender.sendMessage("§e/health on <player>");
+			sender.sendMessage("§e/health off <player>");
 		}
-		return false;
+		else
+		{
+			for(String line : menuMessage)
+			{
+				player.sendMessage(line);
+			}
+		}
+		
+		return true;
 	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		Player player = event.getPlayer();
+		player.setMaxHealth(20);
+		
+		RunnableShorthand.forThis().with(() ->
+		{
+			double healthBonus = getHealthBonus(player);
+			if(healthBonus != player.getMaxHealth())
+			{
+				BUtil.logInfo("Updating " + player.getName() + "'s health to " + healthBonus);
+				player.setMaxHealth(healthBonus);
+			}
+			
+		}).runTaskLater(20L);
+	}
+	
 }

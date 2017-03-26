@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,7 +45,25 @@ public class AdminCommand extends ACommand
 	{
 		if(args.length > 4)
 		{
-			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+			OfflinePlayer offlinePlayer = null;
+			//UUID
+			try
+			{
+				offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
+			}
+			catch(Exception e)
+			{
+				//Player Name
+				try
+				{
+					offlinePlayer = Bukkit.getOfflinePlayer(args[1]);
+				}
+				catch(Exception e2)
+				{
+					//
+				}
+			}
+			
 			if(offlinePlayer == null)
 			{
 				player.sendMessage(playerDoesntExist);
