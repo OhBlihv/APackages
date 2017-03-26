@@ -6,6 +6,7 @@ import me.ohblihv.APackages.util.Messages;
 import me.ohblihv.APackages.util.SaveFlatFile;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -16,6 +17,9 @@ public class APackages extends JavaPlugin
 
 	@Getter
 	private static APackages instance = null;
+	
+	@Getter
+	private CommandListener commandListener;
 
 	@Override
 	public void onEnable()
@@ -28,7 +32,7 @@ public class APackages extends JavaPlugin
 		PackageManager.reload();
 		Messages.reloadMessages();
 
-		getServer().getPluginManager().registerEvents(new CommandListener(), this);
+		getServer().getPluginManager().registerEvents((commandListener = new CommandListener()), this);
 	}
 
 	@Override
@@ -43,6 +47,10 @@ public class APackages extends JavaPlugin
 		if(command.getName().equalsIgnoreCase("apackages"))
 		{
 			CommandListener.getInstance().findCommand(sender, FlatFile.getInstance().getString("commands.admin.command"), args);
+		}
+		else if(sender instanceof ConsoleCommandSender)
+		{
+			commandListener.findCommand(sender, command.getName(), args);
 		}
 		return true;
 	}
