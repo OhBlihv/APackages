@@ -45,9 +45,14 @@ public class HealthCommand extends ACommand
 	private final TreeSet<HealthBonus> healthBonusSet = new TreeSet<>();
 
 	private final String    BONUS_ACTIVE,
+							BONUS_ACTIVE_OTHER,
 							BONUS_INACTIVE,
+							BONUS_INACTIVE_OTHER,
 							BONUS_ALREADY_ACTIVE,
-							BONUS_ALREADY_INACTIVE;
+							BONUS_ALREADY_ACTIVE_OTHER,
+							BONUS_ALREADY_INACTIVE,
+							BONUS_ALREADY_INACTIVE_OTHER,
+							BONUS_RESET_OTHER;
 	
 	public HealthCommand(ConfigurationSection configurationSection)
 	{
@@ -55,9 +60,14 @@ public class HealthCommand extends ACommand
 
 		this.menuMessage = BUtil.translateColours(configurationSection.getStringList("options.menu-message"));
 		this.BONUS_ACTIVE = BUtil.translateColours(configurationSection.getString("options.bonus-active"));
+		this.BONUS_ACTIVE_OTHER = BUtil.translateColours(configurationSection.getString("options.bonus-active-other"));
 		this.BONUS_INACTIVE = BUtil.translateColours(configurationSection.getString("options.bonus-inactive"));
+		this.BONUS_INACTIVE_OTHER = BUtil.translateColours(configurationSection.getString("options.bonus-inactive-other"));
 		this.BONUS_ALREADY_ACTIVE = BUtil.translateColours(configurationSection.getString("options.bonus-already-active"));
+		this.BONUS_ALREADY_ACTIVE_OTHER = BUtil.translateColours(configurationSection.getString("options.bonus-already-active-other"));
 		this.BONUS_ALREADY_INACTIVE = BUtil.translateColours(configurationSection.getString("options.bonus-already-inactive"));
+		this.BONUS_ALREADY_INACTIVE_OTHER = BUtil.translateColours(configurationSection.getString("options.bonus-already-inactive-other"));
+		this.BONUS_RESET_OTHER = BUtil.translateColours(configurationSection.getString("options.bonus-reset-other"));
 
 		for(String permission : configurationSection.getConfigurationSection("options.amount").getKeys(false))
 		{
@@ -132,25 +142,60 @@ public class HealthCommand extends ACommand
 			{
 				if(hasHealthBonusActive(player))
 				{
-					sender.sendMessage(BONUS_ALREADY_ACTIVE);
+					if(sender != player)
+					{
+						sender.sendMessage(BONUS_ALREADY_ACTIVE_OTHER.replace("{player}", player.getName()));
+					}
+					else
+					{
+						sender.sendMessage(BONUS_ALREADY_ACTIVE);
+					}
 					return false;
 				}
 
 				player.setMaxHealth(getHealthBonus(player));
-				sender.sendMessage(BONUS_ACTIVE.replace("{health}", String.valueOf((int) player.getMaxHealth())));
+				
+				if(player != sender)
+				{
+					sender.sendMessage(BONUS_ACTIVE_OTHER.replace("{player}", player.getName()).replace("{health}", String.valueOf((int) player.getMaxHealth())));
+				}
+				else
+				{
+					sender.sendMessage(BONUS_ACTIVE.replace("{health}", String.valueOf((int) player.getMaxHealth())));
+				}
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("off"))
 			{
 				if(!hasHealthBonusActive(player))
 				{
-					sender.sendMessage(BONUS_ALREADY_INACTIVE);
+					if(sender != player)
+					{
+						sender.sendMessage(BONUS_ALREADY_INACTIVE_OTHER.replace("{player}", player.getName()));
+					}
+					else
+					{
+						sender.sendMessage(BONUS_ALREADY_INACTIVE);
+					}
 					return false;
 				}
 				
 				player.setMaxHealth(DEFAULT_HEALTH);
-				sender.sendMessage(BONUS_INACTIVE.replace("{health}", String.valueOf(getHealthBonus(player))));
+				
+				if(sender != player)
+				{
+					sender.sendMessage(BONUS_INACTIVE_OTHER.replace("{player}", player.getName()).replace("{health}", String.valueOf(getHealthBonus(player))));
+				}
+				else
+				{
+					sender.sendMessage(BONUS_INACTIVE.replace("{health}", String.valueOf(getHealthBonus(player))));
+				}
 				return true;
+			}
+			else if(args[0].equalsIgnoreCase("reset"))
+			{
+				player.setMaxHealth(DEFAULT_HEALTH);
+				sender.sendMessage(BONUS_RESET_OTHER.replace("{player}", player.getName()).replace("{health}", String.valueOf(getHealthBonus(player))));
 			}
 		}
 		
