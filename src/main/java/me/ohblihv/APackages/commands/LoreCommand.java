@@ -97,13 +97,21 @@ public class LoreCommand extends ACommand
 		{
 			case "name":
 			{
-				StringBuilder displayName = new StringBuilder();
+				StringBuilder displayNameBuilder = new StringBuilder();
 				for(String arg : args)
 				{
-					displayName.append(arg).append(" ");
+					displayNameBuilder.append(arg).append(" ");
+				}
+				
+				String displayName = displayNameBuilder.toString();
+				
+				//Allow players with the restriction bypass to colourise the displayname of an item
+				if(player.hasPermission(itemRestrictionBypass))
+				{
+					displayName = BUtil.translateColours(displayName);
 				}
 
-				itemMeta.setDisplayName(displayName.toString().substring(0, displayName.length() - 1));
+				itemMeta.setDisplayName(displayName.substring(0, displayName.length() - 1));
 
 				/*if(editedMessage != null && !editedMessage.isEmpty())
 				{
