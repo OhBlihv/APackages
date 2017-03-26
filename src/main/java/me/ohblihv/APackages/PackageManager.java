@@ -81,8 +81,16 @@ public class PackageManager
 
 	public static Map<String, String> getPackageOptions(Player player)
 	{
-		PermissionUser permissionUser = PermissionsEx.getUser(player);
-
+		return getPackageOptions(PermissionsEx.getUser(player));
+	}
+	
+	public static Map<String, String> getPackageOptions(String playerName)
+	{
+		return getPackageOptions(PermissionsEx.getUser(playerName));
+	}
+	
+	public static Map<String, String> getPackageOptions(PermissionUser permissionUser)
+	{
 		Map<String, String> applicableOptionMap = new HashMap<>();
 		for(Map.Entry<String, String> entry : permissionUser.getOptions(null).entrySet())
 		{

@@ -21,8 +21,15 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.9.2-R0.1-SNAPSHOT</version>
+			<version>1.11-R0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.skytonia</groupId>
+			<artifactId>SkyCore</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>ru.tehkode.permissions.bukkit</groupId>
 			<artifactId>PermissionsEx</artifactId>
@@ -30,13 +37,15 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/PermissionsEx-1.23.4.jar</systemPath>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.4</version>
+			<version>1.16.10</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
 		<finalName>${project.artifactId}</finalName>
@@ -53,7 +62,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.5.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
