@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -34,7 +35,7 @@ public class TimeLeftCommand extends ACommand
 		this.noPackages = BUtil.translateColours(configurationSection.getString("options.no-packages"));
 	}
 	
-	private final Pattern OTHER_PLAYER_PATTERN = Pattern.compile("([ ]?You[ ]+)");
+	private final Pattern OTHER_PLAYER_PATTERN = Pattern.compile("([ ]?[Yy]ou[ ]+)");
 
 	@Override
 	public boolean onCommand(CommandSender sender, String[] args)
@@ -51,6 +52,7 @@ public class TimeLeftCommand extends ACommand
 		}
 		
 		Map<String, String> optionMap = PackageManager.getPackageOptions(targetPlayer);
+		List<String> messages = new ArrayList<>();
 		for(String line : printFormat)
 		{
 			if(line.contains("{player}"))
@@ -59,17 +61,7 @@ public class TimeLeftCommand extends ACommand
 			}
 			if(line.equals("{lines}"))
 			{
-				if(optionMap.isEmpty())
-				{
-					String noPackagesMessage = noPackages;
-					if(!targetPlayer.equals(player.getName()))
-					{
-						noPackagesMessage = OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).replaceAll(targetPlayer);
-					}
-					
-					player.sendMessage(noPackagesMessage);
-				}
-				else
+				if(!optionMap.isEmpty())
 				{
 					for(Map.Entry<String, String> entry : optionMap.entrySet())
 					{
@@ -114,17 +106,36 @@ public class TimeLeftCommand extends ACommand
 							continue;
 						}
 						
-						player.sendMessage(printMessage
-							                   .replace("{rank}", monthlyPackage.getDisplayname())
-							                   .replace("{timeleft}", monthlyPackage.getTimeleft(expiryTime)));
+						messages.add(printMessage
+							             .replace("{rank}", monthlyPackage.getDisplayname())
+							             .replace("{timeleft}", monthlyPackage.getTimeleft(expiryTime)));
 					}
 				}
 				
 				continue;
 			}
 			
-			player.sendMessage(line);
+			messages.add(line);
 		}
+		
+		if(messages.isEmpty())
+		{
+			String noPackagesMessage = noPackages;
+			if(!targetPlayer.equals(player.getName()))
+			{
+				noPackagesMessage = OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).replaceAll(targetPlayer);
+			}
+			
+			player.sendMessage(noPackagesMessage);
+		}
+		else
+		{
+			for(String line : messages)
+			{
+				player.sendMessage(line);
+			}
+		}
+		
 		return true;
 	}
 }
