@@ -11,6 +11,7 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by Chris on 4/20/2016.
@@ -32,6 +33,8 @@ public class TimeLeftCommand extends ACommand
 		this.printMessage = BUtil.translateColours(configurationSection.getString("options.print-message"));
 		this.noPackages = BUtil.translateColours(configurationSection.getString("options.no-packages"));
 	}
+	
+	private final Pattern OTHER_PLAYER_PATTERN = Pattern.compile("([ ]?You[ ]+)");
 
 	@Override
 	public boolean onCommand(CommandSender sender, String[] args)
@@ -58,7 +61,13 @@ public class TimeLeftCommand extends ACommand
 			{
 				if(optionMap.isEmpty())
 				{
-					player.sendMessage(noPackages);
+					String noPackagesMessage = noPackages;
+					if(!targetPlayer.equals(player.getName()))
+					{
+						noPackagesMessage = OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).replaceAll(targetPlayer);
+					}
+					
+					player.sendMessage(noPackagesMessage);
 				}
 				else
 				{
