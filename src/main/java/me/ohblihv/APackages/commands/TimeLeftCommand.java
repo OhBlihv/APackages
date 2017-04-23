@@ -90,7 +90,7 @@ public class TimeLeftCommand extends ACommand
 							
 							String packageInternalName = monthlyPackage.getInternalName().toLowerCase();
 							
-							PermissionUser user = PermissionsEx.getUser(player);
+							PermissionUser user = PermissionsEx.getUser(targetPlayer);
 							for(String groupName : user.getGroupNames())
 							{
 								if(groupName.toLowerCase().equals(packageInternalName))
