@@ -123,7 +123,8 @@ public class TimeLeftCommand extends ACommand
 			String noPackagesMessage = noPackages;
 			if(!targetPlayer.equals(player.getName()) && OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).find())
 			{
-				noPackagesMessage = noPackagesMessage.replace("You", targetPlayer);
+				noPackagesMessage = noPackagesMessage.replace("You", targetPlayer)
+													 .replace("have", "has");
 			}
 			
 			player.sendMessage(noPackagesMessage);
