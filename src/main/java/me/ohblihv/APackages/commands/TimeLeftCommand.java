@@ -121,9 +121,9 @@ public class TimeLeftCommand extends ACommand
 		if(messages.isEmpty())
 		{
 			String noPackagesMessage = noPackages;
-			if(!targetPlayer.equals(player.getName()))
+			if(!targetPlayer.equals(player.getName()) && OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).find())
 			{
-				noPackagesMessage = OTHER_PLAYER_PATTERN.matcher(noPackagesMessage).replaceAll(targetPlayer);
+				noPackagesMessage = noPackagesMessage.replace("You", targetPlayer);
 			}
 			
 			player.sendMessage(noPackagesMessage);
